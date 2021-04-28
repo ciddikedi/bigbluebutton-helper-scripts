@@ -142,7 +142,7 @@ module BigBlueButton
           # Increase -threads (or remove it, to use all cpu cores) to speed up processing
           # You can also change the preset: try 'fast' or 'faster'
           # To change quality, adjust the -crf value. Lower numbers are higher quality.
-          %w[-c:v libx264 -crf 23 -threads 2 -preset medium -g 240
+          %w[-c:v libx264 -crf 23 -threads 4 -preset fast -g 240
              -c:a aac -b:a 64K
              -f mp4 -movflags faststart]
         ],
