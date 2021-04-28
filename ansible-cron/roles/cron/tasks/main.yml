@@ -1,0 +1,64 @@
+---
+- name: clear crons
+  become: True
+  ignore_errors: yes
+  when:
+    - clear_crontabs == True
+  shell:
+    cmd: "crontab -r"
+
+- name: add bbb-recorder-stop /etc/cron.d
+  ansible.builtin.cron:
+    name: add cron stop record service
+    weekday: "1-5"
+    minute: "0"
+    hour: "8"
+    user: root
+    job: "systemctl stop bbb-rap-process-worker.service bbb-record-core.timer"
+    cron_file: bbb-recorder-stop
+    
+- name: add bbb-recorder-stop-2 /etc/cron.d
+  when:
+    - multi_record_process == True
+  ansible.builtin.cron:
+    name: add cron stop record service
+    weekday: "1-5"
+    minute: "0"
+    hour: "8"
+    user: root
+    job: "systemctl stop bbb-rap-process-worker-2.service"
+    cron_file: bbb-recorder-stop-2
+
+- name: add bbb-recorder-start under /etc/cron.d
+  ansible.builtin.cron:
+    name: add cron stop record start
+    weekday: "1-5"
+    minute: "0"
+    hour: "20"
+    user: root
+    job: "systemctl start bbb-record-core.timer"
+    cron_file: bbb-recorder-start
+    
+- name: add reboot-weekly /etc/cron.d
+  ansible.builtin.cron:
+    name: reboot weekly
+    weekday: "SUN"
+    minute: "30"
+    hour: "1"
+    user: root
+    job: "/sbin/shutdown -r now"
+    cron_file: reboot-weekly
+    
+- name: copy bbb-clean cron
+  copy:
+    src: bbb-clean
+    dest: /etc/cron.daily/bbb-clean
+    owner: root
+    mode: +x
+    
+- name: copy bigbluebutton cron
+  copy:
+    src: bigbluebutton
+    dest: /etc/cron.daily/bigbluebutton
+    owner: root
+    mode: +x

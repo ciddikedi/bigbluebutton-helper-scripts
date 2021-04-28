@@ -1,0 +1,6 @@
+[bigbluebutton]
+bbb82.uzep.org
+
+[bigbluebutton:vars]
+multi_record_process= True
+clear_crontabs == True

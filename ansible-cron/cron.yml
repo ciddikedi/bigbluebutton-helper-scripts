@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+- hosts: bigbluebutton
+  remote_user: root
+  gather_facts: yes
+  tasks:
+  - name: update crons
+    import_role: { name: cron }
+    tags: cron
