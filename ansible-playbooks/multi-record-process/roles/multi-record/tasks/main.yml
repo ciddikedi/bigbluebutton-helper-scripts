@@ -1,0 +1,60 @@
+---
+- name: copy bbb-rap-process-worker.service
+  copy:
+    src: bbb-rap-process-worker.service
+    dest: /usr/lib/systemd/system/bbb-rap-process-worker.service
+    owner: root
+   
+- name: copy bbb-rap-process-worker-2.service
+  copy:
+    src: bbb-rap-process-worker-2.service
+    dest: /usr/lib/systemd/system/bbb-rap-process-worker-2.service
+    owner: root
+
+- name: copy bbb-record-core.target
+  copy:
+    src: bbb-record-core.target
+    dest: /usr/lib/systemd/system/bbb-record-core.target
+    owner: root
+
+- name: copy bbb-record
+  copy:
+    src: bbb-record
+    dest: /usr/bin/bbb-record
+    owner: root
+    mode: +x
+    
+- name: copy rap-process-worker.rb
+  copy:
+    src: rap-process-worker.rb
+    dest: /usr/local/bigbluebutton/core/scripts/rap-process-worker.rb
+    owner: root
+    mode: +x
+    
+- name: run systemctl daemon-reload
+  become: True
+  shell:
+    cmd: "systemctl daemon-reload"
+    
+- name: run systemctl stop bbb-rap-process-worker.service bbb-record-core.timer
+  become: True
+  shell:
+    cmd: "systemctl stop bbb-rap-process-worker.service bbb-record-core.timer"
+
+- name: run systemctl start bbb-record-core.timer
+  become: True
+  shell:
+    cmd: "systemctl start bbb-record-core.timer"
+    
+- name: copy video.rb
+  copy:
+    src: video.rb
+    dest: /usr/local/bigbluebutton/core/lib/recordandplayback/generators/video.rb
+    owner: root
+    mode: +x
+    
+- name: copy presentation.yml
+  copy:
+    src: presentation.yml
+    dest: /usr/local/bigbluebutton/core/scripts/presentation.yml
+    owner: root

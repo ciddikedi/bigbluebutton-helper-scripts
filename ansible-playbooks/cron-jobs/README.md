@@ -11,4 +11,4 @@ Yapılan işlemler şu şekildedir;
 
 Örnek kullanım şekli;
 
-`ansible-playbook cron.yml -i inventories/example --key-file "~/key.pem"`
+`ansible-playbook playbook.yml -i inventories/example --key-file "~/key.pem"`
