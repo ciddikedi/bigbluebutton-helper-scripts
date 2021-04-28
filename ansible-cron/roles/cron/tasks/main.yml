@@ -12,7 +12,7 @@
     name: add cron stop record service
     weekday: "1-5"
     minute: "0"
-    hour: "8"
+    hour: "9"
     user: root
     job: "systemctl stop bbb-rap-process-worker.service bbb-record-core.timer"
     cron_file: bbb-recorder-stop
@@ -24,7 +24,7 @@
     name: add cron stop record service
     weekday: "1-5"
     minute: "0"
-    hour: "8"
+    hour: "9"
     user: root
     job: "systemctl stop bbb-rap-process-worker-2.service"
     cron_file: bbb-recorder-stop-2
