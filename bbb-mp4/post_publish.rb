@@ -1,3 +1,15 @@
+#!/usr/bin/ruby
+
+require 'optparse'
+
+meeting_id = nil
+OptionParser.new do |opts|
+  opts.on('-m', '--meeting-id MEETING_ID', 'Internal Meeting ID') do |v|
+    meeting_id = v
+  end
+end.parse!
+raise 'Meeting ID was not provided' unless meeting_id
+
 class FileQueue
 
   def initialize(file_name)
@@ -12,35 +24,6 @@ class FileQueue
 
   alias << push
 
-  def pop
-    value = nil
-    rest = nil
-    safe_open('r') do |file|
-      value = file.gets
-      rest = file.read
-    end
-    safe_open('w+') do |file|
-      file.write(rest)
-    end
-    value
-  end
-
-  def length
-    count = 0
-    safe_open('r') do |file|
-      count = file.read.count("\n")
-    end
-    count
-  end
-
-  def empty?
-    return length == 0
-  end
-
-  def clear
-    safe_open('w') do |file| end
-  end
-
   private
   def safe_open(mode)
     File.open(@file_name, mode) do |file|
@@ -53,4 +36,4 @@ end
 
 queue = FileQueue.new '/var/bigbluebutton/queue_mp4.txt'
 
-queue.push ARGV[1]
+queue.push meeting_id

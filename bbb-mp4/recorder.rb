@@ -1,4 +1,8 @@
+#!/usr/bin/ruby
+
 require 'yaml'
+require 'rubygems'
+require 'aws-sdk-s3'
 
 
 class FileQueue
@@ -7,14 +11,6 @@ class FileQueue
     @file_name = file_name
   end
 
-  def push(obj)
-    safe_open('a') do |file|
-      file.write(obj + "\n")
-    end
-  end
-
-  alias << push
-	
   def pop
     value = nil
     rest = nil
@@ -26,22 +22,6 @@ class FileQueue
       file.write(rest)
     end
     value
-  end
-
-  def length
-    count = 0
-    safe_open('r') do |file|
-      count = file.read.count("\n")
-    end
-    count
-  end
-
-  def empty?
-    return length == 0
-  end
-
-  def clear
-    safe_open('w') do |file| end
   end
 	
   private
@@ -56,7 +36,13 @@ end
 
 queue = FileQueue.new '/var/bigbluebutton/queue_mp4.txt'
 props = YAML::load(File.open('/usr/local/bigbluebutton/core/scripts/bigbluebutton.yml'))
+creds = YAML::load(File.open('/usr/local/bigbluebutton/core/scripts/s3_creds.yml'))
 host = props['playback_host']
+endpoint = creds['endpoint']
+access_key_id = creds['access_key_id']
+secret_access_key = creds['secret_access_key']
+bucket = creds['bucket']
+region = creds['region']
 
 while !File.zero?("/var/bigbluebutton/queue_mp4.txt") do
   meetingId = queue.pop
@@ -66,4 +52,18 @@ while !File.zero?("/var/bigbluebutton/queue_mp4.txt") do
     File.rename("/var/bigbluebutton/record-mp4/meeting.mp4", "/var/bigbluebutton/record-mp4/" + meetingId + ".mp4")
   end
 end
+file_name = '/var/bigbluebutton/record-mp4/' + meetingId + '.mp4'
+
+s3 = Aws::S3::Client.new(endpoint: endpoint, access_key_id: access_key_id, secret_access_key: secret_access_key, region: region)
+
+key = File.basename(file_name)
+
+puts "Uploading file #{file_name} to bucket #{bucket}..."
+
+s3.put_object(
+  :bucket => bucket,
+  :key    => bucket + '/' + key,
+  :body   => IO.read(file_name),
+  :acl    => 'public-read'
+)
 puts "ended"
