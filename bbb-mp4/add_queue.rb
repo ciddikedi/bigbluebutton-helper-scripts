@@ -7,8 +7,14 @@ OptionParser.new do |opts|
   opts.on('-m', '--meeting-id MEETING_ID', 'Internal Meeting ID') do |v|
     meeting_id = v
   end
+  opts.on('-f', '--format FORMAT', 'Recording Format') do |v|
+  end
 end.parse!
-raise 'Meeting ID was not provided' unless meeting_id
+
+unless meeting_id
+  msg = 'Meeting ID was not provided'
+  puts(msg) && raise(msg)
+end
 
 class FileQueue
 

@@ -43,7 +43,7 @@ access_key_id = creds['access_key_id']
 secret_access_key = creds['secret_access_key']
 bucket = creds['bucket']
 region = creds['region']
-
+s3 = Aws::S3::Client.new(endpoint: endpoint, access_key_id: access_key_id, secret_access_key: secret_access_key, region: region)
 while !File.zero?("/var/bigbluebutton/queue_mp4.txt") do
   meetingId = queue.pop
   puts meetingId
@@ -51,19 +51,14 @@ while !File.zero?("/var/bigbluebutton/queue_mp4.txt") do
   if(File.exist?("/var/bigbluebutton/record-mp4/meeting.mp4"))
     File.rename("/var/bigbluebutton/record-mp4/meeting.mp4", "/var/bigbluebutton/record-mp4/" + meetingId + ".mp4")
   end
+  file_name = '/var/bigbluebutton/record-mp4/' + meetingId + '.mp4'
+  key = File.basename(file_name)
+  puts "Uploading file #{file_name} to bucket #{bucket}..."
+  s3.put_object(
+    :bucket => bucket,
+    :key    => bucket + '/' + key,
+    :body   => IO.read(file_name),
+    :acl    => 'public-read'
+	)
 end
-file_name = '/var/bigbluebutton/record-mp4/' + meetingId + '.mp4'
-
-s3 = Aws::S3::Client.new(endpoint: endpoint, access_key_id: access_key_id, secret_access_key: secret_access_key, region: region)
-
-key = File.basename(file_name)
-
-puts "Uploading file #{file_name} to bucket #{bucket}..."
-
-s3.put_object(
-  :bucket => bucket,
-  :key    => bucket + '/' + key,
-  :body   => IO.read(file_name),
-  :acl    => 'public-read'
-)
 puts "ended"

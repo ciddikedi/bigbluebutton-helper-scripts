@@ -1,6 +1,6 @@
 BigBlueButton toplantılarını MP4 video formatına dönüştürür.
 
-* **post_publish.rb:** Yayınlanan kayıtları dosya kuyruğuna ekler. Betik `/usr/local/bigbluebutton/core/scripts/post_publish` klasörü altında bulunmalı ve çalıştırma izinlerine sahip olmalıdır.
+* **add_queue.rb:** Yayınlanan kayıtları dosya kuyruğuna ekler. Betik `/usr/local/bigbluebutton/core/scripts/post_publish` klasörü altında bulunmalı ve çalıştırma izinlerine sahip olmalıdır.
 * **recorder.rb:** Dosya kuyruğuna eklenen toplantıların sırasıyla kayıtlarını alarak MP4 formatına dönüştürür ve S3 depolama alanına aktarır.
 
 Kullanmaya başlamadan önce `gem install aws-sdk-s3` komutu ile gerekli kütüphaneler kurulmalıdır.
