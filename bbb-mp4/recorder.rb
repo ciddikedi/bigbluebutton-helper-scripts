@@ -13,11 +13,9 @@ if !Dir.exist?('/var/bigbluebutton/record_mp4')
 end
 
 class FileQueue
-	
   def initialize(file_name)
     @file_name = file_name
   end
-
   def pop
     value = nil
     rest = nil
@@ -29,8 +27,7 @@ class FileQueue
       file.write(rest)
     end
     value
-  end
-	
+  end	
   private
   def safe_open(mode)
     File.open(@file_name, mode) do |file|
@@ -54,6 +51,7 @@ playback = creds['playback_server']
 s3Client = Aws::S3::Client.new(endpoint: endpoint, access_key_id: access_key_id, secret_access_key: secret_access_key, region: region)
 s3Resource = Aws::S3::Resource.new(client: s3Client)
 bucketObj = s3Resource.bucket(bucket)
+
 while !File.zero?("/var/bigbluebutton/queue_mp4.txt") do
   meetingId = queue.pop
   puts meetingId
@@ -72,8 +70,8 @@ while !File.zero?("/var/bigbluebutton/queue_mp4.txt") do
     :body   => IO.read(file_name),
     :acl    => 'public-read'
   )
-  File.delete('/var/bigbluebutton/record_mp4/temp/' + meetingId + '.mp4')
   if(bucketObj.object(bucket + '/' + meetingId + '.mp4').exists?)
+    File.delete('/var/bigbluebutton/record_mp4/temp/' + meetingId + '.mp4')
     FileUtils.touch('/var/bigbluebutton/record_mp4/uploaded/' + meetingId + '.done')
   end
 end
