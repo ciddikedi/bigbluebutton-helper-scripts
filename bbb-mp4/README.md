@@ -12,6 +12,7 @@ Depolama alanı bilgileri `/usr/local/bigbluebutton/core/scripts/s3_creds.yml` d
 * **secret_access_key:** Gizli anahtar.
 * **bucket:** Toplantıların kaydedileceği bucket.
 * **region:** Depolama bölgesi. UZEP depolaması için **DEFAULT** kalabilir.
+* **playback_server:** Kayıtların izleneceği oynatma sunucusu.
 
 Örnek kullanım şekli;
 ```
@@ -20,4 +21,5 @@ access_key_id: XXXXXXXXX
 secret_access_key: XXXXXXXXX
 bucket: bbb-record
 region: DEFAULT
+playback_server: https://bbbplayback.deneme.com
 ```
